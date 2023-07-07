@@ -1,25 +1,43 @@
+const makePlayer = (symbol) => {
+    const getSymbol = () => symbol;
+    return {getSymbol}
+}
+
 const gameBoard = (() => {
     const boardEntries = ['','','','','','','','',''];
-    const boxes = document.querySelectorAll('.box');
-    const resultContainer = document.querySelector('.result');
-    const makePlayer = (playerName, playerSymbol) => {
-        return {name:playerName, symbol:playerSymbol}
-    }
-    const player1 = makePlayer('You', 'X');
-    const player2 = makePlayer('Computer', 'O');
-    let currentPlayer = player1;
-    const updateBoardDOM = () => {
-        for (let i = 0; i < boxes.length; ++i) {
-            boxes[i].textContent = boardEntries[i];
-        }
-    }
     const updateBoard = (index,symbol) => {
         boardEntries[index] = symbol;
-        updateBoardDOM();
+        displayController.updateBoardDOM();
     }
     const getBoardStatus = () => {
         return boardEntries;
     }
+    return {getBoardStatus, updateBoard};
+})();
+
+const displayController = (() => {
+    const boxes = document.querySelectorAll('.box');
+    const resultContainer = document.querySelector('.result');
+    boxes.forEach((box,index) => box.addEventListener('click', () => gameController.playTurn(index)));
+    const updateBoardDOM = () => {
+        for (let i = 0; i < boxes.length; ++i) {
+            boxes[i].textContent = gameBoard.getBoardStatus()[i];
+        }
+    }
+    const getResultContainer = () => {
+        return resultContainer.textContent;
+    }
+
+    const setResultContainer = (content) => {
+        resultContainer.textContent = content
+    }
+    return {updateBoardDOM, getResultContainer, setResultContainer}
+})();
+
+const gameController = (() => {
+    const player1 = makePlayer('X');
+    const player2 = makePlayer('O');
+    let currentPlayer = player1;
     const changeTurn = () => {
         if (currentPlayer === player1){
             currentPlayer = player2;
@@ -29,66 +47,62 @@ const gameBoard = (() => {
         }
     }
     const playTurn = (index) => {
-        if (boardEntries[index] === '' && !resultContainer.textContent.includes('winner')) {
-            updateBoard(index, currentPlayer.symbol);
+        if (gameBoard.getBoardStatus()[index] === '' && !displayController.getResultContainer().includes('winner')) {
+            gameBoard.updateBoard(index, currentPlayer.getSymbol());
             changeTurn();
-            resultContainer.textContent = (checkWinner(boardEntries));
+            displayController.setResultContainer(checkWinner(gameBoard.getBoardStatus()));
         }
     }
-    boxes.forEach((box,index) => box.addEventListener('click', () => playTurn(index)));
-    return {getBoardStatus};
-})();
-
-
-function checkWinner(boardEntries) {
-    function sameCharacters(string){
-        for (let i = 0; i < string.length; i++) {
-            if (string[i] != string[0]){
-                return false;
+    const checkWinner = (boardEntries) => {
+        function sameCharacters(string){
+            for (let i = 0; i < string.length; i++) {
+                if (string[i] != string[0]){
+                    return false;
+                }
             }
+            return true;
         }
-        return true;
-    }
-    const winner = '';
-    //check horizontal
-    for (let i = 0; i < boardEntries.length; i = i + 3) {
-        const tempString = boardEntries.slice(i, i+3).join('');
-        if (sameCharacters(tempString) && tempString.length === 3) {
-            return `The winner is ${tempString[0]}`
-        };
-    }
-    //check vertical
-    for (let i = 0; i < 3; i++) {
-        let tempString = '';
-        for (let j = i; j < boardEntries.length; j = j + 3) {
-            tempString += boardEntries[j];
+        const winner = '';
+        //check horizontal
+        for (let i = 0; i < boardEntries.length; i = i + 3) {
+            const tempString = boardEntries.slice(i, i+3).join('');
+            if (sameCharacters(tempString) && tempString.length === 3) {
+                return `The winner is ${tempString[0]}`
+            };
         }
-        if (sameCharacters(tempString) && tempString.length === 3) {
-            return `The winner is ${tempString[0]}`;
-        };
-    }
-    //check diagonally
-    {
-        let tempString = '';
-        for (let j = 0; j < boardEntries.length; j = j + 4) {
-            tempString += boardEntries[j];
+        //check vertical
+        for (let i = 0; i < 3; i++) {
+            let tempString = '';
+            for (let j = i; j < boardEntries.length; j = j + 3) {
+                tempString += boardEntries[j];
+            }
+            if (sameCharacters(tempString) && tempString.length === 3) {
+                return `The winner is ${tempString[0]}`;
+            };
         }
-        if (sameCharacters(tempString) && tempString.length === 3) {
-            return `The winner is ${tempString[0]}`;
-        };
-    }
-    //check diagonally
-    {
-        let tempString = '';
-        for (let j = 2; j < boardEntries.length - 1; j = j + 2) {
-            tempString += boardEntries[j];
+        //check diagonally left-right
+        {
+            let tempString = '';
+            for (let j = 0; j < boardEntries.length; j = j + 4) {
+                tempString += boardEntries[j];
+            }
+            if (sameCharacters(tempString) && tempString.length === 3) {
+                return `The winner is ${tempString[0]}`;
+            };
         }
-        console.log(tempString);
-        if (sameCharacters(tempString) && tempString.length === 3) {
-            return `The winner is ${tempString[0]}`;
-        };
+        //check diagonally right-left
+        {
+            let tempString = '';
+            for (let j = 2; j < boardEntries.length - 1; j = j + 2) {
+                tempString += boardEntries[j];
+            }
+            if (sameCharacters(tempString) && tempString.length === 3) {
+                return `The winner is ${tempString[0]}`;
+            };
+        }
+        if (boardEntries.join('').length === 9){
+            return "Its a tie!";
+        } else return 'Result Pending!';
     }
-    if (boardEntries.join('').length === 9){
-        return "Its a tie!";
-    } else return 'Result Pending!';
-}
+    return {playTurn}
+})();
