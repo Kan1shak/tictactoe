@@ -15,6 +15,7 @@ html {
     padding: 0;
     box-sizing: border-box;
     font-family: 'Montserrat', sans-serif;
+    user-select: none;
 }
 
 header {
@@ -40,7 +41,7 @@ header {
 }
 
 .main-container p {
-    margin-bottom: 1rem;
+    margin-bottom: 2rem;
     font-size: 1.5rem;
     font-weight: 700;
     background: -webkit-linear-gradient(to right, #0DEBFF 0%, #FF11C7 91%);
