@@ -19,6 +19,7 @@ const gameBoard = (() => {
         displayController.updateBoardDOM();
         displayController.setResultCSS(gameController.getFinalWinner());
         gameController.resetFinalWinner();
+        displayController.resetAttribute();
     }
     return {getBoardStatus, updateBoard,reset};
 })();
@@ -27,8 +28,26 @@ const displayController = (() => {
     const _boxes = document.querySelectorAll('.box');
     const _resultContainer = document.querySelector('.result');
     const _resetButton = document.getElementById('reset');
-    _boxes.forEach((box,index) => box.addEventListener('click', () => gameController.playTurn(index)));
-    _resetButton.addEventListener('click', () => gameBoard.reset());
+    _boxes.forEach((box,index) => box.addEventListener('click', () => {
+        gameController.playTurn(index);
+        if (box.textContent != ''){
+            box.setAttribute('data',`${gameController.getCurrentPlayerSymbol()}`);
+            const currentColor = document.documentElement.style.getPropertyValue('--current-color') || '#ff11c7';
+            console.log(currentColor);
+            document.documentElement.style.setProperty('--current-symbol', `\'${gameController.getCurrentPlayerSymbol()}\'`);
+            _changeHoverColor(currentColor);
+        }
+    }));
+    const _changeHoverColor = (currentColor) => {
+        const prevColor = currentColor === '#ff11c7' ? '#0debff' : '#ff11c7';
+        document.documentElement.style.setProperty('--current-color', `${currentColor == '#ff11c7' ? '#0debff' : '#ff11c7'}`);
+        document.documentElement.style.setProperty('--prev-color', `${prevColor == '#ff11c7' ? '#0debff' : '#ff11c7'}`);
+    }
+    _resetButton.addEventListener('click', () => {
+        gameBoard.reset();
+        document.documentElement.style.setProperty('--current-symbol', `\'${gameController.getCurrentPlayerSymbol()}\'`);
+        _changeHoverColor('#0debff');
+    });
     const updateBoardDOM = () => {
         for (let i = 0; i < _boxes.length; ++i) {
             _boxes[i].textContent = gameBoard.getBoardStatus()[i];
@@ -38,9 +57,14 @@ const displayController = (() => {
         return _resultContainer.textContent;
     }
     const setResultContainer = (content) => {
-        _resultContainer.textContent = content
+        _resultContainer.innerHTML = content;
     }
-    setTimeout(() => setResultContainer(`Its Player ${gameController.getCurrentPlayerSymbol()}'s Turn`), 0);
+    const resetAttribute = () => {
+        _boxes.forEach((box)=>{
+            box.removeAttribute("data")
+        })
+    }
+    setTimeout(() => setResultContainer(`Its Player <span>${gameController.getCurrentPlayerSymbol()}'s</span> Turn`), 0);
     const setResultCSS = (winningArr) => {
         _boxes.forEach((box,index)=> {
             if (index === winningArr[0] || index === winningArr[1] || index === winningArr[2]) {
@@ -48,7 +72,7 @@ const displayController = (() => {
             }
         });
     }
-    return {updateBoardDOM, getResultContainer, setResultContainer,setResultCSS}
+    return {updateBoardDOM, getResultContainer, setResultContainer,setResultCSS,resetAttribute}
 })();
 
 const gameController = (() => {
@@ -131,9 +155,9 @@ const gameController = (() => {
         }
         if (boardEntries.join('').length === 9){
             return ["Its a tie!",0];
-        } else return [`Its Player ${_currentPlayer.getSymbol()}'s Turn`,''];
+        } else return [`Its Player <span>${_currentPlayer.getSymbol()}'s</span> Turn`,''];
         }
-        else return [`Its Player ${_currentPlayer.getSymbol()}'s Turn`,''];
+        else return [`Its Player <span>${_currentPlayer.getSymbol()}'s</span> Turn`,''];
     }
     return {playTurn,getFinalWinner,resetFinalWinner,getCurrentPlayerSymbol,resetCurrentPlayerSymbol}
 })();

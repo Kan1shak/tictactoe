@@ -5,24 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TicTacToe</title>
     <link rel="stylesheet" href="index.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geologica:wght@900&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="index.js" defer></script>
 </head>
 <body>
     <header>
         <h1>Tic-Tac-Toe!</h1>
     </header>
-    <div class="gameboard">
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
+    <div class="flex-container">
+        <div class="main-container">
+            <p class="result"></p>
+            <div class="gameboard">
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+            </div>
+            <button id="reset">Restart</button>
+        </div>
+    
     </div>
-    <p class="result"></p>
-    <button id="reset">Restart</button>
 </body>
 </html>

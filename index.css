@@ -1,16 +1,57 @@
+:root {
+    --current-symbol: 'X';
+    --current-color: #ff11c7;
+    --prev-color: #0debff;
+    overflow: hidden;
+}
+
+html {
+    --current-color: #ff11c7;
+    background-color:  #EEF0F4;
+}
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
 }
 
-body {
+header {
+    position: fixed;
+    top: 2%;
+    left: 0;
+    width: 100%;
+    padding: 10px 2rem !important;
+    text-align: center;
+    background: -webkit-repeating-linear-gradient(to left, #0DEBFF 20%, #FF11C7 100%);
+    background: -moz-repeating-linear-gradient(to left, #0DEBFF 20%, #FF11C7 100%);
+    background: repeating-linear-gradient(to left, #0DEBFF 20%, #FF11C7 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.main-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    background-color: #f1f1f1;
+    background-color: #EEF0F4;
     flex-direction: column;
+}
+
+.main-container p {
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    background: -webkit-linear-gradient(to right, #0DEBFF 0%, #FF11C7 91%);
+    background: -moz-linear-gradient(to right, #0DEBFF 0%, #FF11C7 91%);
+    background: linear-gradient(to right, #0DEBFF 0%, #FF11C7 91%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.main-container p span {
+    -webkit-text-fill-color: var(--current-color);
 }
 
 .gameboard {
@@ -18,20 +59,102 @@ body {
     display: grid;
     grid-template-columns: repeat(3, 100px);
     grid-template-rows: repeat(3, 100px);
-    width: 300px;
-    height: 300px;
-    border: 1px solid #000;
+    gap: 1.5rem;
 }
 
 .box {
-    border: 1px solid #000;
+    border-radius: 7px;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 50px;
-    cursor: pointer;
+    color: var(--prev-color);
+    font-size:4rem;
+    font-weight: 900;
+    font-family: 'Geologica', sans-serif;
+    background: #EEF0F4;
+    border-radius: 20%;
+    box-shadow: 9.91px 9.91px 20px #D9DADE, -9.91px -9.91px 20px #FFFFFF;
+    z-index: 100;
+    transition: all 0.2s ease-in-out;
 }
 
-.win-combination {
-    background-color: #caffa1;
+.box:hover:not([data])::after {
+    opacity: 1;
+}
+
+.box:not([data])::after {
+    content: var(--current-symbol);
+    -webkit-text-stroke: 3px var(--current-color);
+    -webkit-text-fill-color: transparent;  
+    opacity: 0;
+    transition: all 0.1 s ease-in-out;
+}
+
+.box[data='X']{
+    color: #0debff;
+    animation: onclick 0.4s ease-in-out;
+}
+
+.box[data='O']{
+    color: #ff11c7;
+    animation: onclick 0.4s ease-in-out;
+}
+
+.win-combination[data='O'] {
+    color: hsl(314, 81%, 12%);
+    background-color: hsl(314, 71%, 55%);
+}
+
+.win-combination[data='X'] {
+    color: #063439;
+    background-color: #3ad0de;
+}
+
+#reset {
+    margin-top: 3rem;
+    border: 0px solid transparent;
+    padding: 1rem 5rem;
+    color: #252525;
+    cursor: pointer;
+    font-size: 1.25rem;
+    font-weight: 700;
+    border-radius: 50px;
+    box-shadow: 9.91px 9.91px 20px #D9DADE, -9.91px -9.91px 20px #FFFFFF,inset 0px 0px 0px #d9dade00, inset 0px 0px 0px #ffffff00;
+    z-index: 100;
+    transition: all 0.2s ease-in-out;
+    background: -webkit-repeating-linear-gradient(to left, #0DEBFF 20%, #FF11C7 100%);
+    background: -moz-repeating-linear-gradient(to left, #0DEBFF 20%, #FF11C7 100%);
+    background: repeating-linear-gradient(to left, #0DEBFF 20%, #FF11C7 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+#reset:hover {
+    box-shadow: 9.91px 9.91px 20px #cbcccf, -9.91px -9.91px 20px #f2f2f2,inset 0px 0px 0px #d9dade00, inset 0px 0px 0px #ffffff00;
+}
+
+#reset:active {
+    box-shadow: 0px 0px 0px #D9DADE, 0px 0px 0px #FFFFFF;
+}
+
+.flex-container {
+    margin-top: calc(10svh + 3.875rem );
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+
+@keyframes onclick {
+    0% {
+        box-shadow: 9.91px 9.91px 20px #D9DADE, -9.91px -9.91px 20px #FFFFFF,inset 9.91px 9.91px 20px #ff11c71b, inset -9.91px -9.91px 20px #0debff1b;
+    }
+    60% {
+        box-shadow: 0px 0px 0px #D9DADE, 0px 0px 0px #FFFFFF,inset 0px 0px 0px #D9DADE, inset 0px 0px 0px #FFFFFF;
+    }
+    100% {
+        box-shadow: 9.91px 9.91px 20px #D9DADE, -9.91px -9.91px 20px #FFFFFF,inset 9.91px 9.91px 20px #ff11c700, inset -9.91px -9.91px 20px #0debff00;
+    }
+    
 }
